@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io'; // To deal with files and
@@ -41,7 +42,7 @@ class DatabaseHelper {
 
   void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $noteTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colDescription TEXT, $colPriority INTEGER, $colDate TEXT)');
+        'CREATE TABLE $noteTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colDescription TEXT, $colPriority INTEGER, $colDate TEXT);');
   }
 
   // Fetch all note map objects from database
@@ -66,6 +67,8 @@ class DatabaseHelper {
   Future<int> insertNote(Note note) async {
     Database db = await this.database;
     var result = await db.insert(noteTable, note.toMap());
+    debugPrint(
+        'Inserted note: Id = $result, Title = ${note.title}, Description = ${note.description}');
     return result;
   }
 
@@ -74,6 +77,8 @@ class DatabaseHelper {
     var db = await this.database;
     var result = await db.update(noteTable, note.toMap(),
         where: '$colId = ?', whereArgs: [note.id]);
+    debugPrint(
+        'Updated note: Id = $result, Title = ${note.title}, Description = ${note.description}');
     return result;
   }
 
@@ -81,6 +86,7 @@ class DatabaseHelper {
   Future<int> deleteNote(int id) async {
     var db = await this.database;
     int result = await db.delete(noteTable, where: '$colId = $id');
+    debugPrint('Delete note: Id = $result');
     return result;
   }
 

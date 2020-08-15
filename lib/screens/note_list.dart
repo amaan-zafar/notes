@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:notes/components/header.dart';
+import 'package:notes/components/home_app_bar.dart';
 import 'package:notes/screens/note_detail.dart';
-import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'package:notes/utils/database_helper.dart';
 import 'package:notes/models/note.dart';
+
+import 'about.dart';
 
 class NoteList extends StatefulWidget {
   @override
@@ -14,22 +17,60 @@ class _NoteListState extends State<NoteList> {
   DatabaseHelper dbHelper = DatabaseHelper();
   List<Note> noteList;
   int count = 0;
+  bool darkTheme = true;
   @override
   Widget build(BuildContext context) {
     if (noteList == null) {
       noteList = List<Note>();
       updateListView();
     }
-    return Scaffold(
-      appBar: AppBar(title: Text('Notes')),
-      body: getNoteListView(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          debugPrint('Fab Pressed');
-          navigateToDetail(Note('', '', 2), 'Add a note');
-        },
-        tooltip: 'Add a note',
-        child: Icon(Icons.add),
+    return SafeArea(
+      child: Scaffold(
+        appBar: HomeAppBar(
+          height: 80,
+        ),
+        drawer: Drawer(
+          child: ListView(
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  child: Header(),
+                  decoration: BoxDecoration(color: Colors.blue),
+                ),
+                ListTile(
+                    leading: Icon(Icons.note_add),
+                    title: Text('Notes'),
+                    onTap: () {}),
+                ListTile(
+                    leading: Icon(Icons.delete),
+                    title: Text('Trash'),
+                    onTap: () {}),
+                ListTile(
+                    leading: Icon(Icons.settings),
+                    title: Text('About App'),
+                    onTap: () {
+                      navigateToAbout();
+                    }),
+                SwitchListTile(
+                  title: Text('App Theme'),
+                  onChanged: (bool value) {
+                    setState(() {
+                      darkTheme = value;
+                    });
+                  },
+                  value: darkTheme,
+                )
+              ]),
+        ),
+        body: count == 0 ? emptyScreen() : getNoteListView(),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            navigateToDetail(Note('', '', 2), 'Add a note');
+          },
+          label: Text('Add a note'),
+          icon: Icon(Icons.add),
+        ),
       ),
     );
   }
@@ -48,19 +89,36 @@ class _NoteListState extends State<NoteList> {
                 child: getPriorityIcon(this.noteList[position].priority),
               ),
               title: Text(this.noteList[position].title),
-              subtitle: Text(this.noteList[position].date),
+              subtitle: Text(this.noteList[position].description),
               trailing: GestureDetector(
                   child: Icon(Icons.delete),
                   onTap: () {
                     _delete(context, noteList[position]);
                   }),
               onTap: () {
-                debugPrint('ListTile tapped');
-                navigateToDetail(this.noteList[position], 'Edit note');
+                navigateToDetail(this.noteList[position], 'Edit Your Note');
               },
             ),
           );
         });
+  }
+
+  Container emptyScreen() {
+    return Container(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Center(
+            child: Icon(
+          Icons.note_add,
+          size: 120,
+        )),
+        Text(
+          'Notes you add appear here',
+          textScaleFactor: 1.1,
+        ),
+      ],
+    ));
   }
 
   // Returns the priority color
@@ -115,6 +173,12 @@ class _NoteListState extends State<NoteList> {
     if (result == true) {
       updateListView();
     }
+  }
+
+  void navigateToAbout() async {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return About();
+    }));
   }
 
   void updateListView() async {

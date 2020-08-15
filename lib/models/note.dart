@@ -5,23 +5,26 @@ class Note {
   String _date;
   int _priority;
 
-  Note(this._title, this._date, this._priority, [this._description]);
+  Note(
+    this._title,
+    this._description,
+    this._priority,
+  );
 
-  Note.withId(this._id, this._title, this._date, this._priority,
-      [this._description]);
+  Note.withId(this._id, this._title, this._description, this._priority);
 
   int get id => _id;
 
   String get title => _title;
 
   set title(String value) {
-    if (value.length > 255) _title = value;
+    if (value.length < 255) _title = value;
   }
 
   String get description => _description;
 
   set description(String value) {
-    if (value.length > 1000) _description = value;
+    if (value.length < 1000) _description = value;
   }
 
   String get date => _date;

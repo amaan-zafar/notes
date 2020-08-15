@@ -8,21 +8,21 @@ class NoteDetail extends StatefulWidget {
   final Note note;
   NoteDetail(this.note, this.appBarTitle);
   @override
-  _NoteDetailState createState() =>
-      _NoteDetailState(this.note, this.appBarTitle);
+  NoteDetailState createState() => NoteDetailState(this.note, this.appBarTitle);
 }
 
-class _NoteDetailState extends State<NoteDetail> {
+class NoteDetailState extends State<NoteDetail> {
   static var _priorities = ['High', 'Low'];
 
   DatabaseHelper dbHelper = DatabaseHelper();
+
   String appBarTitle;
   Note note;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  _NoteDetailState(this.note, this.appBarTitle);
+  NoteDetailState(this.note, this.appBarTitle);
 
   @override
   Widget build(BuildContext context) {
@@ -30,111 +30,129 @@ class _NoteDetailState extends State<NoteDetail> {
     descriptionController.text = note.description;
 
     return WillPopScope(
-      onWillPop: () {
-        moveToLastScreen();
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(appBarTitle),
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back,
-            ),
-            onPressed: () {
-              moveToLastScreen();
-            },
+        onWillPop: () {
+          moveToLastScreen();
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: Text(appBarTitle),
+            // leading: IconButton(
+            //     icon: Icon(Icons.arrow_back),
+            //     onPressed: () {
+            //       moveToLastScreen();
+            //     }),
           ),
-        ),
-        body: Padding(
-          padding: EdgeInsets.fromLTRB(10, 15, 10, 0),
-          child: ListView(
-            children: <Widget>[
-              // Dropdown
-              ListTile(
+          body: Padding(
+            padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
+            child: ListView(
+              children: <Widget>[
+                // Dropdown Button
+                ListTile(
                   title: DropdownButton(
-                items: _priorities.map((String dropDownItem) {
-                  return DropdownMenuItem<String>(
-                    value: dropDownItem,
-                    child: Text(dropDownItem),
-                  );
-                }).toList(),
-                value: getPriorityAsString(note.priority),
-                onChanged: (valueSelected) {
-                  setState(() {
-                    debugPrint('$valueSelected selected');
-                    updatePriorityAsInt(valueSelected);
-                  });
-                },
-              )),
-              // Title TextField
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: TextField(
-                  controller: titleController,
-                  onChanged: (value) {
-                    debugPrint('New value in title is $value');
-                    updateTitle();
-                  },
-                  decoration: InputDecoration(
-                      labelText: 'Title',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0))),
+                      items: _priorities.map((String dropDownStringItem) {
+                        return DropdownMenuItem<String>(
+                          value: dropDownStringItem,
+                          child: Text(dropDownStringItem),
+                        );
+                      }).toList(),
+                      value: getPriorityAsString(note.priority),
+                      onChanged: (valueSelectedByUser) {
+                        setState(() {
+                          debugPrint('User selected $valueSelectedByUser');
+                          updatePriorityAsInt(valueSelectedByUser);
+                        });
+                      }),
                 ),
-              ),
-              // Description TextField
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: TextField(
-                  controller: descriptionController,
-                  onChanged: (value) {
-                    debugPrint('New value in description is $value');
-                    updateDescription();
-                  },
-                  decoration: InputDecoration(
-                      labelText: 'Description',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0))),
+
+                // Title Textfield
+                Padding(
+                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                  child: TextField(
+                    controller: titleController,
+                    onChanged: (value) {
+                      debugPrint('New value = $value');
+
+                      note.title = value;
+                      debugPrint('New notes title = ${note.title}');
+                    },
+                    decoration: InputDecoration(
+                        labelText: 'Title',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0))),
+                  ),
                 ),
-              ),
-              // Save and Delete buttons
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
+
+                // Description Textfield
+                Padding(
+                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+                  child: TextField(
+                    controller: descriptionController,
+                    onChanged: (value) {
+                      note.description = value;
+                      debugPrint('New notes desc = ${this.note.description}');
+                    },
+                    decoration: InputDecoration(
+                        labelText: 'Description',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0))),
+                  ),
+                ),
+
+                // Save and Delete buttons
+                Padding(
+                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                          child: RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            debugPrint('Save clicked');
-                            _save();
-                          });
-                        },
-                        child: Text('Save'),
-                      )),
-                      SizedBox(width: 10),
+                        child: RaisedButton(
+                          color: Theme.of(context).primaryColorDark,
+                          textColor: Theme.of(context).primaryColorLight,
+                          child: Text(
+                            'Save',
+                            textScaleFactor: 1.5,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              debugPrint("Save button clicked");
+                              _save();
+                            });
+                          },
+                        ),
+                      ),
+                      Container(
+                        width: 5.0,
+                      ),
                       Expanded(
-                          child: RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            debugPrint('Delete clicked');
-                            _delete();
-                          });
-                        },
-                        child: Text('Delete'),
-                      )),
+                        child: RaisedButton(
+                          color: Theme.of(context).primaryColorDark,
+                          textColor: Theme.of(context).primaryColorLight,
+                          child: Text(
+                            'Delete',
+                            textScaleFactor: 1.5,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              debugPrint("Delete button clicked");
+                              _delete();
+                            });
+                          },
+                        ),
+                      ),
                     ],
-                  ))
-            ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   void moveToLastScreen() {
     Navigator.pop(context, true);
   }
 
+  // Convert the String priority in the form of integer before saving it to Database
   void updatePriorityAsInt(String value) {
     switch (value) {
       case 'High':
@@ -146,65 +164,78 @@ class _NoteDetailState extends State<NoteDetail> {
     }
   }
 
+  // Convert int priority to String priority and display it to user in DropDown
   String getPriorityAsString(int value) {
     String priority;
     switch (value) {
       case 1:
-        priority = _priorities[0];
+        priority = _priorities[0]; // 'High'
         break;
       case 2:
-        priority = _priorities[1];
+        priority = _priorities[1]; // 'Low'
         break;
     }
     return priority;
   }
 
+  // Update the title of Note object
   void updateTitle() {
     note.title = titleController.text;
+    debugPrint('Updated title is ${note.title}');
   }
 
+  // Update the description of Note object
   void updateDescription() {
     note.description = descriptionController.text;
+    debugPrint('Updated desc is ${note.description}');
   }
 
+  // Save data to database
   void _save() async {
     moveToLastScreen();
+
+    debugPrint(
+        'Saved: Title = ${note.title}, Description = ${note.description}, Date = ${note.date}');
     note.date = DateFormat.yMMMd().format(DateTime.now());
     int result;
     if (note.id != null) {
+      // Case 1: Update operation
       result = await dbHelper.updateNote(note);
-      debugPrint('New note');
     } else {
+      // Case 2: Insert Operation
       result = await dbHelper.insertNote(note);
-      debugPrint('Editing  note');
     }
 
-    if (result != 0) {
-      _showAlert('Status', 'Note saved successfully');
-    } else {
-      _showAlert('Status', 'Problem saving note');
+    if (result == 0) {
+      // Failure
+      _showAlertDialog('Status', 'There was a problem saving your note');
     }
   }
 
   void _delete() async {
     moveToLastScreen();
+
+    // Case 1: If user is trying to delete the NEW NOTE i.e. he has come to
+    // the detail page by pressing the FAB of NoteList page.
     if (note.id == null) {
-      _showAlert('Status', 'No note was deleted');
+      _showAlertDialog('Status', 'No Note was deleted');
       return;
     }
+
+    // Case 2: User is trying to delete the old note that already has a valid ID.
     int result = await dbHelper.deleteNote(note.id);
     if (result != 0) {
-      _showAlert('Status', 'Note deleted successfully');
+      _showAlertDialog('Status', 'Note Deleted Successfully');
     } else {
-      _showAlert('Status', 'Error');
+      _showAlertDialog('Status', 'Error Occured while Deleting Note');
     }
   }
 
-  void _showAlert(String title, String message) {
-    AlertDialog alert = AlertDialog(
+  void _showAlertDialog(String title, String message) {
+    AlertDialog alertDialog = AlertDialog(
       title: Text(title),
       content: Text(message),
     );
-    showDialog(context: context, builder: (_) => alert);
+    showDialog(context: context, builder: (_) => alertDialog);
   }
 }
