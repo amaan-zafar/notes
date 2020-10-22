@@ -34,6 +34,7 @@ class NavigationDrawer extends StatelessWidget {
                   navigateToAbout(context);
                 }),
             SwitchListTile(
+              activeColor: Colors.blue,
               title: Text('App Theme'),
               onChanged: (bool value) {
                 themeChange.darkTheme = value;

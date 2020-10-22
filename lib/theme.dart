@@ -9,7 +9,7 @@ class AppTheme {
       backgroundColor: isDarkTheme ? Colors.black : Color(0xffF1F5FB),
       indicatorColor: isDarkTheme ? Color(0xff0E1D36) : Color(0xffCBDCF8),
       buttonColor: isDarkTheme ? Color(0xff3B3B3B) : Color(0xffF1F5FB),
-      hintColor: isDarkTheme ? Color(0xff280C0B) : Color(0xffEECED3),
+      hintColor: isDarkTheme ? Color(0xff280C0B) : Colors.white,
       highlightColor: isDarkTheme ? Color(0xff372901) : Color(0xffFCE192),
       hoverColor: isDarkTheme ? Color(0xff3A3A3B) : Color(0xff4285F4),
       focusColor: isDarkTheme ? Color(0xff0B2512) : Color(0xffA8DAB5),
