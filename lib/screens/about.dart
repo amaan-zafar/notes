@@ -9,11 +9,25 @@ class About extends StatelessWidget {
         ),
         body: Container(
             child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Developer'),
-            Text('Amaan Zafar'),
-            Text('Made in'),
-            Text('Flutter'),
+            Spacer(flex: 1),
+            CircleAvatar(
+              backgroundImage: AssetImage('images/amaan-profile-photo.jpg'),
+              radius: 60,
+            ),
+            Spacer(flex: 1),
+            Divider(height: 5),
+            Spacer(),
+            Text(
+              'Amaan Zafar',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            Spacer(flex: 1),
+            Text('BITS Pilani'),
+            Spacer(flex: 5),
+            Text('Version 1.0'),
+            Spacer(flex: 1),
           ],
         )));
   }
