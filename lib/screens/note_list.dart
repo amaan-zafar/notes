@@ -36,6 +36,7 @@ class _NoteListState extends State<NoteList> {
           onPressed: () {
             navigateToDetail(Note('', '', 2), 'Add a note');
           },
+          backgroundColor: Colors.blue,
           child: Icon(Icons.add),
         ),
       ),

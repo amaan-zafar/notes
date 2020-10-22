@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/theme.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
