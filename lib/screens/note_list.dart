@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes/components/header.dart';
 import 'package:notes/components/home_app_bar.dart';
+import 'package:notes/components/navigation_drawer.dart';
 import 'package:notes/screens/note_detail.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:notes/utils/database_helper.dart';
@@ -29,47 +30,13 @@ class _NoteListState extends State<NoteList> {
         appBar: HomeAppBar(
           height: 80,
         ),
-        drawer: Drawer(
-          child: ListView(
-              physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  child: Header(),
-                  decoration: BoxDecoration(color: Colors.blue),
-                ),
-                ListTile(
-                    leading: Icon(Icons.note_add),
-                    title: Text('Notes'),
-                    onTap: () {}),
-                ListTile(
-                    leading: Icon(Icons.delete),
-                    title: Text('Trash'),
-                    onTap: () {}),
-                ListTile(
-                    leading: Icon(Icons.settings),
-                    title: Text('About App'),
-                    onTap: () {
-                      navigateToAbout();
-                    }),
-                SwitchListTile(
-                  title: Text('App Theme'),
-                  onChanged: (bool value) {
-                    setState(() {
-                      darkTheme = value;
-                    });
-                  },
-                  value: darkTheme,
-                )
-              ]),
-        ),
+        drawer: NavigationDrawer(),
         body: count == 0 ? emptyScreen() : getNoteListView(),
-        floatingActionButton: FloatingActionButton.extended(
+        floatingActionButton: FloatingActionButton(
           onPressed: () {
             navigateToDetail(Note('', '', 2), 'Add a note');
           },
-          label: Text('Add a note'),
-          icon: Icon(Icons.add),
+          child: Icon(Icons.add),
         ),
       ),
     );
@@ -112,6 +79,7 @@ class _NoteListState extends State<NoteList> {
             child: Icon(
           Icons.note_add,
           size: 120,
+          color: Colors.blue,
         )),
         Text(
           'Notes you add appear here',
@@ -173,12 +141,6 @@ class _NoteListState extends State<NoteList> {
     if (result == true) {
       updateListView();
     }
-  }
-
-  void navigateToAbout() async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return About();
-    }));
   }
 
   void updateListView() async {

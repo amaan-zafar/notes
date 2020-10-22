@@ -123,21 +123,19 @@ class NoteDetailState extends State<NoteDetail> {
                       Container(
                         width: 5.0,
                       ),
-                      Expanded(
-                        child: RaisedButton(
-                          color: Theme.of(context).primaryColorDark,
-                          textColor: Theme.of(context).primaryColorLight,
-                          child: Text(
-                            'Delete',
-                            textScaleFactor: 1.5,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              debugPrint("Delete button clicked");
-                              _delete();
-                            });
-                          },
+                      RaisedButton(
+                        color: Theme.of(context).primaryColorDark,
+                        textColor: Theme.of(context).primaryColorLight,
+                        child: Text(
+                          'Delete',
+                          textScaleFactor: 1.5,
                         ),
+                        onPressed: () {
+                          setState(() {
+                            debugPrint("Delete button clicked");
+                            _delete();
+                          });
+                        },
                       ),
                     ],
                   ),
