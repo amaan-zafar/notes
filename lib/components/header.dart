@@ -3,46 +3,52 @@ import 'package:flutter/material.dart';
 class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AssetImage assetImage = AssetImage('images/header_light_theme.png');
-    Image image = Image(
-      image: assetImage,
-      width: 10,
-    );
     return Container(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+        child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Row(
-          children: <Widget>[
-            Spacer(flex: 5),
-            CircleAvatar(
-              backgroundColor: Color(0xffff5c5c),
-              radius: 9,
-            ),
-            Spacer(),
-            CircleAvatar(
-              backgroundColor: Color(0xffffde59),
-              radius: 9,
-            ),
-            Spacer(),
-            CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 9,
-            ),
-            Spacer(
-              flex: 18,
-            ),
-          ],
+        Text(
+          'Notepad',
+          style: Theme.of(context)
+              .textTheme
+              .headline3
+              .copyWith(color: Colors.white),
         ),
-        SizedBox(
-          height: 6,
+        Text(
+          '.',
+          style: Theme.of(context)
+              .textTheme
+              .headline3
+              .copyWith(color: Color(0xffff5c5c)),
         ),
-        Text('NOTEPAD',
-            style: TextStyle(
-              fontSize: 40,
-              fontFamily: 'Times',
-              color: Colors.white,
-            )),
+        Text(
+          '.',
+          style: Theme.of(context)
+              .textTheme
+              .headline3
+              .copyWith(color: Color(0xffffde59)),
+        ),
+        Text(
+          '.',
+          style: Theme.of(context)
+              .textTheme
+              .headline3
+              .copyWith(color: Colors.white),
+        )
+        // CircleAvatar(
+        //   backgroundColor: Color(0xffff5c5c),
+        //   radius: 6,
+        // ),
+        // SizedBox(width: 6),
+        // CircleAvatar(
+        //   backgroundColor: Color(0xffffde59),
+        //   radius: 6,
+        // ),
+        // SizedBox(width: 6),
+        // CircleAvatar(
+        //   backgroundColor: Colors.white,
+        //   radius: 6,
+        // ),
       ],
     ));
   }
