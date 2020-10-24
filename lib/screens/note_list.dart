@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:notes/utils/database_helper.dart';
 import 'package:notes/models/note.dart';
 
+import '../utils.dart';
 import 'about.dart';
 
 class NoteList extends StatefulWidget {
@@ -47,25 +48,34 @@ class _NoteListState extends State<NoteList> {
     return ListView.builder(
         itemCount: count,
         itemBuilder: (BuildContext context, int position) {
+          final Note noteItem = noteList[position];
           return Card(
             color: Colors.white,
             elevation: 2.0,
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor:
-                    getPriorityColor(this.noteList[position].priority),
-                child: getPriorityIcon(this.noteList[position].priority),
-              ),
-              title: Text(this.noteList[position].title),
-              subtitle: Text(this.noteList[position].description),
-              trailing: GestureDetector(
-                  child: Icon(Icons.delete),
-                  onTap: () {
-                    _delete(context, noteList[position]);
-                  }),
-              onTap: () {
-                navigateToDetail(this.noteList[position], 'Edit Your Note');
+            child: Dismissible(
+              key: Key(noteItem.id.toString()),
+              onDismissed: (direction) {
+                _delete(context, noteItem);
               },
+              background: Container(
+                color: Colors.red,
+                child: Icon(Icons.delete, color: Colors.white),
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 16),
+              ),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor:
+                      Utils.getPriorityColor(this.noteList[position].priority),
+                  child:
+                      Utils.getPriorityIcon(this.noteList[position].priority),
+                ),
+                title: Text(this.noteList[position].title),
+                subtitle: Text(this.noteList[position].description),
+                onTap: () {
+                  navigateToDetail(this.noteList[position], 'Edit Your Note');
+                },
+              ),
             ),
           );
         });
@@ -90,46 +100,28 @@ class _NoteListState extends State<NoteList> {
     ));
   }
 
-  // Returns the priority color
-  Color getPriorityColor(int priority) {
-    switch (priority) {
-      case 1:
-        return Colors.red;
-        break;
-      case 2:
-        return Colors.yellow;
-        break;
-
-      default:
-        return Colors.yellow;
-    }
-  }
-
-  // Returns priority icon
-  Icon getPriorityIcon(int priority) {
-    switch (priority) {
-      case 1:
-        return Icon(Icons.play_arrow);
-        break;
-      case 2:
-        return Icon(Icons.keyboard_arrow_right);
-        break;
-
-      default:
-        return Icon(Icons.keyboard_arrow_right);
-    }
-  }
-
   void _delete(BuildContext context, Note note) async {
     int result = await dbHelper.deleteNote(note.id);
     if (result != 0) {
-      _showSnackBar(context, 'Note moved to trash');
+      _showSnackBar(context, note, 'Note moved to trash');
       updateListView();
     }
   }
 
-  void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
+  void _undoDelete(Note note) async {
+    setState(() async {
+      await dbHelper.insertNote(note);
+    });
+  }
+
+  void _showSnackBar(BuildContext context, Note note, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      action: SnackBarAction(
+        label: 'UNDO',
+        onPressed: () => _undoDelete(note),
+      ),
+    );
     Scaffold.of(context).showSnackBar(snackBar);
   }
 

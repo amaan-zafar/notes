@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:notes/utils/database_helper.dart';
 import 'package:notes/models/note.dart';
 
+import '../utils.dart';
+
 class NoteDetail extends StatefulWidget {
   final String appBarTitle;
   final Note note;
@@ -49,20 +51,23 @@ class NoteDetailState extends State<NoteDetail> {
               children: <Widget>[
                 // Dropdown Button
                 ListTile(
+                  leading: Text('Priority :'),
                   title: DropdownButton(
-                      items: _priorities.map((String dropDownStringItem) {
-                        return DropdownMenuItem<String>(
-                          value: dropDownStringItem,
-                          child: Text(dropDownStringItem),
-                        );
-                      }).toList(),
-                      value: getPriorityAsString(note.priority),
-                      onChanged: (valueSelectedByUser) {
-                        setState(() {
-                          debugPrint('User selected $valueSelectedByUser');
-                          updatePriorityAsInt(valueSelectedByUser);
-                        });
-                      }),
+                    items: _priorities.map((String dropDownStringItem) {
+                      return DropdownMenuItem<String>(
+                        value: dropDownStringItem,
+                        child: Text(dropDownStringItem),
+                      );
+                    }).toList(),
+                    value: getPriorityAsString(note.priority),
+                    onChanged: (valueSelectedByUser) {
+                      setState(() {
+                        debugPrint('User selected $valueSelectedByUser');
+                        updatePriorityAsInt(valueSelectedByUser);
+                      });
+                    },
+                    dropdownColor: Utils.getPriorityColor(note.priority),
+                  ),
                 ),
 
                 // Title Textfield
@@ -123,19 +128,21 @@ class NoteDetailState extends State<NoteDetail> {
                       Container(
                         width: 5.0,
                       ),
-                      RaisedButton(
-                        color: Theme.of(context).primaryColorDark,
-                        textColor: Theme.of(context).primaryColorLight,
-                        child: Text(
-                          'Delete',
-                          textScaleFactor: 1.5,
+                      Expanded(
+                        child: RaisedButton(
+                          color: Theme.of(context).primaryColorDark,
+                          textColor: Theme.of(context).primaryColorLight,
+                          child: Text(
+                            'Delete',
+                            textScaleFactor: 1.5,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              debugPrint("Delete button clicked");
+                              _delete();
+                            });
+                          },
                         ),
-                        onPressed: () {
-                          setState(() {
-                            debugPrint("Delete button clicked");
-                            _delete();
-                          });
-                        },
                       ),
                     ],
                   ),
