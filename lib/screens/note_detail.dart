@@ -14,7 +14,9 @@ class NoteDetail extends StatefulWidget {
 }
 
 class NoteDetailState extends State<NoteDetail> {
-  static var _priorities = ['High', 'Low'];
+  static var _intToStringPriority = {1: 'High', 2: 'Low'};
+  static var _stringToIntPriority = _intToStringPriority
+      .map((k, v) => MapEntry(v, k)); //Reverses Key-Value pair
 
   DatabaseHelper dbHelper = DatabaseHelper();
 
@@ -50,23 +52,45 @@ class NoteDetailState extends State<NoteDetail> {
             child: ListView(
               children: <Widget>[
                 // Dropdown Button
-                ListTile(
-                  leading: Text('Priority :'),
-                  title: DropdownButton(
-                    items: _priorities.map((String dropDownStringItem) {
-                      return DropdownMenuItem<String>(
-                        value: dropDownStringItem,
-                        child: Text(dropDownStringItem),
-                      );
-                    }).toList(),
-                    value: getPriorityAsString(note.priority),
-                    onChanged: (valueSelectedByUser) {
-                      setState(() {
-                        debugPrint('User selected $valueSelectedByUser');
-                        updatePriorityAsInt(valueSelectedByUser);
-                      });
-                    },
-                    dropdownColor: Utils.getPriorityColor(note.priority),
+                Container(
+                  child: Row(
+                    children: [
+                      Text(
+                        'Priority :   ',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            .copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      Expanded(
+                        child: DropdownButton(
+                          isExpanded: true,
+                          items: _intToStringPriority.values
+                              .map((String dropDownStringItem) {
+                            return DropdownMenuItem<String>(
+                              value: dropDownStringItem,
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Utils.getPriorityColor(
+                                      _stringToIntPriority[dropDownStringItem]),
+                                  child: Utils.getPriorityIcon(
+                                      _stringToIntPriority[dropDownStringItem]),
+                                ),
+                                title: Text(dropDownStringItem),
+                              ),
+                            );
+                          }).toList(),
+                          value: _intToStringPriority[note.priority],
+                          onChanged: (valueSelectedByUser) {
+                            setState(() {
+                              debugPrint('User selected $valueSelectedByUser');
+                              note.priority =
+                                  _stringToIntPriority[valueSelectedByUser];
+                            });
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
@@ -155,32 +179,6 @@ class NoteDetailState extends State<NoteDetail> {
 
   void moveToLastScreen() {
     Navigator.pop(context, true);
-  }
-
-  // Convert the String priority in the form of integer before saving it to Database
-  void updatePriorityAsInt(String value) {
-    switch (value) {
-      case 'High':
-        note.priority = 1;
-        break;
-      case 'Low':
-        note.priority = 2;
-        break;
-    }
-  }
-
-  // Convert int priority to String priority and display it to user in DropDown
-  String getPriorityAsString(int value) {
-    String priority;
-    switch (value) {
-      case 1:
-        priority = _priorities[0]; // 'High'
-        break;
-      case 2:
-        priority = _priorities[1]; // 'Low'
-        break;
-    }
-    return priority;
   }
 
   // Update the title of Note object
