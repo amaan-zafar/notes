@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatelessWidget {
   @override
@@ -11,24 +12,50 @@ class About extends StatelessWidget {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Spacer(flex: 1),
+            Spacer(),
             CircleAvatar(
               backgroundImage: AssetImage('images/amaan-profile-photo.jpg'),
               radius: 60,
             ),
-            Spacer(flex: 1),
-            Divider(height: 5),
+            Spacer(),
+            Divider(height: 8),
             Spacer(),
             Text(
               'Amaan Zafar',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             ),
-            Spacer(flex: 1),
-            Text('BITS Pilani'),
-            Spacer(flex: 5),
+            Spacer(),
+            Text(
+              'BITS Pilani',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            Text(
+              'Github : amaan-zafar',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.link),
+                InkWell(
+                  child: Text('profile-link'),
+                  onTap: () => _launchURL(),
+                ),
+              ],
+            ),
+            Spacer(flex: 12),
             Text('Version 1.0'),
-            Spacer(flex: 1),
+            Spacer(),
           ],
         )));
+  }
+
+  _launchURL() async {
+    const url = 'https://github.com/amaan-zafar';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
